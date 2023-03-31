@@ -18,7 +18,6 @@ $userDao = new UserDao($conn, $BASE_URL);
 
 $userData = $userDao->verifyToken(false);
 
-print_r($userData); exit;
 
 ?>
 
