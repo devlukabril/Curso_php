@@ -3,6 +3,7 @@
     require_once("models/User.pbp");
     require_once("models/message.pbp");
 
+    //DAO – Data Access Object (Objeto de Acesso à Dados)
     class UserDAO implements UserDAOInterface{
 
         private $conn;
@@ -64,6 +65,25 @@
         }
         public function verifytoken($protected = false){
 
+            if(!empty($_SESSION["token"])){
+
+                //Pega o token da sesssion
+                $token = $_SESSION["token"];
+
+                $user = $this->findByToken($token);
+
+                if($user){
+                    return $user;
+                }else{
+
+                //Redireciona usuário não autenticado
+                $this->message->setMessage("Faça a autenticação para acessar esta página", "error", "index.php");
+
+                }
+
+            }else{
+                return false;
+            }
 
         }
         public function setTokenToSession($token, $redirect = true){
@@ -116,8 +136,35 @@
         }
         public function findByToken($token){
 
+            if($token != ""){
+
+                $stmt = $this->conn->prepare("SELECT * FROM users WHERE token = :token");
+
+                $stmt->bindParam(":token", $token);
+
+                $stmt->execute();
+
+                if($stmt->rowCount() > 0){
+
+                    $data = $stmt->fetch();
+                    $user = $this->buildUser($data);
+
+                    return $user;
+
+
+                }else{
+                    return false;
+                }
+
+             }else{
+                return false;
+            }
+
 
         }
+
+        
+
         public function changePassword(user $user){
 
 
