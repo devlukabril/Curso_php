@@ -1,4 +1,3 @@
-<?php
   require_once("templates/header.php");
 
   // Verifica se usuário está autenticado
